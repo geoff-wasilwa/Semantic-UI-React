@@ -1,4 +1,45 @@
 {
+  "Image": {
+    "displayName": "Image",
+    "methods": [],
+    "props": [
+      {
+        "type": "custom",
+        "required": false,
+        "description": [
+          ""
+        ],
+        "defaultValue": "'img'",
+        "tags": [],
+        "name": "as"
+      },
+      {
+        "type": "bool",
+        "required": false,
+        "description": [
+          "An image may be formatted to appear inline with text as an avatar."
+        ],
+        "tags": [],
+        "name": "avatar"
+      },
+      {
+        "type": "bool",
+        "required": false,
+        "description": [
+          "An image can appear circular."
+        ],
+        "tags": [],
+        "name": "circular"
+      }
+    ],
+    "docBlock": {
+      "tags": [],
+      "description": [
+        "An image is a graphic representation of something."
+      ]
+    },
+    "path": "src/components/Image/Image.js"
+  },
   "Layout": {
     "displayName": "Layout",
     "methods": [],
@@ -291,6 +332,15 @@
         "name": "children"
       },
       {
+        "type": "object",
+        "required": false,
+        "description": [
+          ""
+        ],
+        "tags": [],
+        "name": "componentVariables"
+      },
+      {
         "type": "arrayOf",
         "required": false,
         "description": [
@@ -359,6 +409,7 @@
         "description": [
           ""
         ],
+        "defaultValue": "{}",
         "tags": [],
         "name": "siteVariables"
       },
@@ -393,5 +444,27 @@
       ]
     },
     "path": "src/components/Provider/Provider.js"
+  },
+  "ProviderConsumer": {
+    "displayName": "ProviderConsumer",
+    "methods": [],
+    "props": [
+      {
+        "type": "func",
+        "required": true,
+        "description": [
+          ""
+        ],
+        "tags": [],
+        "name": "children"
+      }
+    ],
+    "docBlock": {
+      "tags": [],
+      "description": [
+        ""
+      ]
+    },
+    "path": "src/components/Provider/ProviderConsumer.js"
   }
 }

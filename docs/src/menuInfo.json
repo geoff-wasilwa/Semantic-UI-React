@@ -1,4 +1,19 @@
 {
+  "Image": [
+    {
+      "examples": [
+        {
+          "title": "Default",
+          "path": "components/Image/Types/ImageExample"
+        },
+        {
+          "title": "Avatar",
+          "path": "components/Image/Types/ImageExampleAvatar"
+        }
+      ],
+      "name": "Types"
+    }
+  ],
   "Layout": [
     {
       "examples": [

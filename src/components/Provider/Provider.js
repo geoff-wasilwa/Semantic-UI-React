@@ -8,6 +8,7 @@ import React, { Component } from 'react'
 import { Provider as RendererProvider, ThemeProvider } from 'react-fela'
 
 import { META } from '../../lib'
+import ProviderConsumer from './ProviderConsumer'
 
 class Provider extends Component {
   static propTypes = {
@@ -26,10 +27,15 @@ class Provider extends Component {
       }),
     ),
     siteVariables: PropTypes.object,
+    componentVariables: PropTypes.object,
     staticStyles: PropTypes.arrayOf(
       PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.func]),
     ),
     children: PropTypes.element.isRequired,
+  }
+
+  static defaultProps = {
+    siteVariables: {}, // required by ThemeProvider
   }
 
   static _meta = {
@@ -37,9 +43,7 @@ class Provider extends Component {
     type: META.TYPES.ADDON,
   }
 
-  static defaultProps = {
-    siteVariables: {}, // required by ThemeProvider
-  }
+  static Consumer = ProviderConsumer
 
   renderer = createRenderer({
     plugins: [],
@@ -106,11 +110,17 @@ class Provider extends Component {
   }
 
   render() {
-    const { siteVariables, children } = this.props
+    const { componentVariables, siteVariables, children } = this.props
+
+    const theme = { siteVariables, componentVariables }
 
     return (
       <RendererProvider renderer={this.renderer}>
-        {siteVariables ? <ThemeProvider theme={siteVariables}>{children}</ThemeProvider> : children}
+        {siteVariables || componentVariables ? (
+          <ThemeProvider theme={theme}>{children}</ThemeProvider>
+        ) : (
+          children
+        )}
       </RendererProvider>
     )
   }

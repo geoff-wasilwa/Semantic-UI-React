@@ -42,6 +42,9 @@ const render = NewApp =>
   ReactDOM.render(
     <Provider
       siteVariables={siteVariables}
+      componentVariables={{
+        Image: {},
+      }}
       staticStyles={[normalizeCSS, globalRules]}
       fontFaces={fontFaces}
     >

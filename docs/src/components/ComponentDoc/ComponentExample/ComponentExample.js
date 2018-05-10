@@ -1,14 +1,16 @@
 import * as Babel from '@babel/standalone'
 import _ from 'lodash'
 import PropTypes from 'prop-types'
-import React, { Component, createElement, isValidElement } from 'react'
+import React, { Component, isValidElement } from 'react'
 import { withRouter } from 'react-router'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { html } from 'js-beautify'
 import copyToClipboard from 'copy-to-clipboard'
-import { Divider, Grid, Menu, Visibility } from 'semantic-ui-react'
+import { Divider, Form, Grid, Menu, Visibility } from 'semantic-ui-react'
 
-import { exampleContext, repoURL, scrollToAnchor } from 'docs/src/utils'
+import { Provider } from 'stardust'
+
+import { exampleContext, variablesContext, repoURL, scrollToAnchor } from 'docs/src/utils'
 import { shallowEqual } from 'src/lib'
 import Editor from 'docs/src/components/Editor/Editor'
 import ComponentControls from '../ComponentControls'
@@ -52,6 +54,8 @@ const errorStyle = {
  * Allows toggling the the raw `code` code block.
  */
 class ComponentExample extends Component {
+  state = {}
+
   static contextTypes = {
     onPassed: PropTypes.func,
   }
@@ -191,8 +195,15 @@ class ComponentExample extends Component {
 
   renderOriginalExample = () => {
     const { examplePath } = this.props
-    return createElement(exampleContext(`./${examplePath}.js`).default)
+    const ExampleComponent = exampleContext(`./${examplePath}.js`).default
+    return this.renderWithProvider(ExampleComponent)
   }
+
+  renderWithProvider = SomeComponent => (
+    <Provider componentVariables={this.state.componentVariables}>
+      <SomeComponent />
+    </Provider>
+  )
 
   renderSourceCode = _.debounce(() => {
     const { examplePath } = this.props
@@ -265,7 +276,7 @@ class ComponentExample extends Component {
     try {
       const { code } = Babel.transform(IIFE, babelConfig)
       const Example = eval(code) // eslint-disable-line no-eval
-      const exampleElement = _.isFunction(Example) ? <Example /> : Example
+      const exampleElement = _.isFunction(Example) ? this.renderWithProvider(Example) : Example
 
       if (!isValidElement(exampleElement)) {
         this.renderError(
@@ -288,8 +299,7 @@ class ComponentExample extends Component {
   }, 100)
 
   handleChangeCode = (sourceCode) => {
-    this.setState({ sourceCode })
-    this.renderSourceCode()
+    this.setState({ sourceCode }, this.renderSourceCode)
   }
 
   setGitHubHrefs = () => {
@@ -429,6 +439,17 @@ class ComponentExample extends Component {
     )
   }
 
+  handleVariableChange = (component, variable) => (e, { value }) => {
+    this.setState(
+      _.merge(this.state, {
+        componentVariables: {
+          [component]: { [variable]: value },
+        },
+      }),
+      this.renderSourceCode,
+    )
+  }
+
   render() {
     const { children, description, suiVersion, title } = this.props
     const { controlsVisible, exampleElement, isActive, showCode, showHTML } = this.state
@@ -454,6 +475,31 @@ class ComponentExample extends Component {
                 title={title}
                 suiVersion={suiVersion}
               />
+              <Provider.Consumer>
+                {({ siteVariables }) => {
+                  const { examplePath } = this.props
+                  const name = examplePath.split('/')[1]
+                  const componentVariables = variablesContext(
+                    `./${name}/${_.camelCase(name)}Variables.js`,
+                  ).default
+                  const variables = componentVariables(siteVariables)
+
+                  return (
+                    <div>
+                      <Form>
+                        {_.map(variables, (val, key) => (
+                          <Form.Input
+                            key={key}
+                            label={key}
+                            defaultValue={val}
+                            onChange={this.handleVariableChange(name, key)}
+                          />
+                        ))}
+                      </Form>
+                    </div>
+                  )
+                }}
+              </Provider.Consumer>
             </Grid.Column>
             <Grid.Column textAlign='right' width={4}>
               <ComponentControls
