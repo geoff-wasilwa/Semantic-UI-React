@@ -12,6 +12,15 @@
         }
       ],
       "name": "Types"
+    },
+    {
+      "examples": [
+        {
+          "title": "Circular",
+          "path": "components/Image/Variations/ImageExampleCircular"
+        }
+      ],
+      "name": "Variations"
     }
   ],
   "Layout": [
