@@ -1,3 +1,8 @@
+ * WE DO NOT support `partAs`, because: leads to `partProps`, ...
+ * WE DO NOT support `renderPart`, because: we can just use `part={}` and support functions as shorthand
+ * WE DO NOT support arrays for `as` or (also: `part={}`), arrays are not considered shorthand primitives
+ * ^^ Can still be used for higher-level props, such as `<Modal actions={[]} />`, because this is handled @ component level
+
 ## Principles
 * "Just works" out of the box
 * Intuitive :: should be able to work w/ lib w/o consulting docs
